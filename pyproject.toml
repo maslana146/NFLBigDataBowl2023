@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "nflbigdatabowl2023"
+version = "0.1.0"
+description = ""
+authors = ["bartosz.maslanka.consultant <bartosz.maslanka.consultant@nielsen.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+dash = "^2.7.0"
+pandas = "^1.5.2"
+plotly = "^5.11.0"
+tqdm = "^4.64.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
