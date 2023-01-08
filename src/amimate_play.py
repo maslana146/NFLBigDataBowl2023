@@ -3,9 +3,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 
-colors = {"TB": '#D50A0A',
-          "DAL": '#003594',
-          "football": '#CBB67C'
+colors = {0: '#D50A0A',
+          1: '#003594',
+          2: '#CBB67C'
           }
 
 
@@ -133,7 +133,7 @@ def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId)
             )
         )
         # Plot Players
-        for team in selected_tracking_df.team.unique():
+        for color_id,team in enumerate(selected_tracking_df.team.unique()):
             plot_df = selected_tracking_df[(selected_tracking_df.team == team) & (
                     selected_tracking_df.frameId == frameId)].copy()
             if team != "football":
@@ -147,11 +147,11 @@ def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId)
                             selected_player_df["pff_positionLinedUp"].values[0],
                             selected_player_df["pff_role"].values[0]))
                 data.append(go.Scatter(x=plot_df["x"], y=plot_df["y"], mode='markers',
-                                       marker_color=colors[team], name=team,
+                                       marker_color=colors[color_id], name=team,
                                        hovertext=hover_text_array, hoverinfo="text"))
             else:
                 data.append(go.Scatter(x=plot_df["x"], y=plot_df["y"], mode='markers',
-                                       marker_color=colors[team], name=team, hoverinfo='none'))
+                                       marker_color=colors[color_id], name=team, hoverinfo='none'))
         # add frame to slider
         slider_step = {"args": [
             [frameId],
