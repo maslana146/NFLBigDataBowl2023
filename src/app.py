@@ -87,7 +87,6 @@ def update_figure(week_number, game_id, player_id):
     Output('player_info', 'children'),
     Input('player_id_input', 'value'))
 def update_figure(player_id):
-    print(player_id)
     return get_player_season_info(player_id)
 
 
