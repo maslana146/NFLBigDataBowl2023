@@ -1,9 +1,8 @@
 from dash import Dash, Input, Output, html, dcc
-import plotly.express as px
 from load_data import (
     weeks_data, pff_scouting_data, players_data, plays_data
 )
-import pandas as pd
+import ast
 
 from src.amimate_play import animate_play
 from src.player_heatmap import get_player_season_info
@@ -12,6 +11,7 @@ from src.player_heatmap import get_player_season_info
 def get_players_option():
     data = players_data
     options = {player[1][0]: player[1][6] for player in data.iterrows()}
+    options[None] = "Ball"
     return options
 
 
@@ -33,9 +33,10 @@ app.layout = html.Div(children=[
             id='animate-graph',
         )
     ),
+    html.H4(id='test'),
     html.H3("Player season info"),
     dcc.Dropdown(id='player_id_input', value=25511, options=get_players_option(),
-                 placeholder="Play id input ...",clearable=False),
+                 placeholder="Ball"),
     dcc.Loading(
         id="loading-2",
         type="graph",
@@ -89,6 +90,20 @@ def update_figure(week_number, game_id, player_id):
 def update_figure(player_id):
     return get_player_season_info(player_id)
 
+
+@app.callback(
+    Output('player_id_input', 'value'),
+    Input('animate-graph', 'clickData')
+)
+def get_selected_player(player_point):
+    if player_point is not None:
+        data = player_point['points'][0]
+        hover_data = data.get('hovertext', None)
+        nfl_id = None
+        if hover_data:
+            nfl_id = ast.literal_eval(data['hovertext'])['nflId']
+        return nfl_id
+    return None
 
 if __name__ == '__main__':
     app.run_server(debug=True)

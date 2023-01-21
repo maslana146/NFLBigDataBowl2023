@@ -140,12 +140,13 @@ def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId)
                 hover_text_array = []
                 for nflId in plot_df.nflId:
                     selected_player_df = plot_df[plot_df.nflId == nflId]
-                    hover_text_array.append(
-                        "nflId:{}<br>displayName:{}<br>Position:{}<br>Role:{}".format(
-                            selected_player_df["nflId"].values[0],
-                            selected_player_df["displayName"].values[0],
-                            selected_player_df["pff_positionLinedUp"].values[0],
-                            selected_player_df["pff_role"].values[0]))
+                    p_info = {
+                        'nflId':selected_player_df["nflId"].values[0],
+                        'displayName':selected_player_df["displayName"].values[0],
+                        'Position':selected_player_df["pff_positionLinedUp"].values[0],
+                        'Role':selected_player_df["pff_role"].values[0],
+                    }
+                    hover_text_array.append(p_info)
                 data.append(go.Scatter(x=plot_df["x"], y=plot_df["y"], mode='markers',
                                        marker_color=colors[color_id], name=team,
                                        hovertext=hover_text_array, hoverinfo="text"))

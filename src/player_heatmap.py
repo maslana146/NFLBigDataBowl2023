@@ -7,7 +7,10 @@ import plotly.express as px
 def get_player_season_info(player_nfl_id):
     player_df = None
     for week in weeks_data:
-        player_data = week[week['nflId'] == int(player_nfl_id)]
+        if player_nfl_id is None:
+            player_data = week[week['nflId'].isna()]
+        else:
+            player_data = week[week['nflId'] == int(player_nfl_id)]
         if player_data is not None:
             player_df = pd.concat([player_df, player_data])
         else:
