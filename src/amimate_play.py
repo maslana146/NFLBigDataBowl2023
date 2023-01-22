@@ -211,4 +211,11 @@ def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId)
                              y='s',
                              color='displayName',
                              line_dash='team')
+
+    fig.update_layout(paper_bgcolor="#282828",
+                      font=dict(
+                          family="Courier New, monospace",
+                          size=18,
+                          color="white"
+                      ))
     return fig, fig_speed_line

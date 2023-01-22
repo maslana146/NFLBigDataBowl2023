@@ -1,9 +1,11 @@
+import ast
+
+import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output, html, dcc
+
 from load_data import (
     weeks_data, pff_scouting_data, players_data, plays_data
 )
-import ast
-
 from src.amimate_play import animate_play
 from src.player_heatmap import get_player_season_info
 
@@ -15,35 +17,71 @@ def get_players_option():
     return options
 
 
-app = Dash(__name__)
+app = Dash(__name__,
+           external_stylesheets=[dbc.themes.DARKLY], )
 app.layout = html.Div(children=[
     html.H1(children='NFL Big Data Bowl 2023'),
-    html.H3("Week of the game ..."),
-    dcc.Dropdown(placeholder="Week of the game ...", options=[i for i in range(1, 9)],
-                 id='week_number_input', value=1,clearable=False),
-    html.H3("Game id input ..."),
-    dcc.Dropdown(placeholder="Game id input ...", multi=False, id='game_id_input',
-                 value=2021090900,clearable=False),
-    html.H3("Play id input ..."),
-    dcc.Dropdown(id='play_id_input', value=349, placeholder="Play id input ...",clearable=False),
-    dcc.Loading(
-        id="loading-1",
-        type="graph",
-        children=dcc.Graph(
-            id='animate-graph',
-        )
-    ),
-    html.H4(id='test'),
-    html.H3("Player season info"),
-    dcc.Dropdown(id='player_id_input', value=25511, options=get_players_option(),
-                 placeholder="Ball"),
-    dcc.Loading(
-        id="loading-2",
-        type="graph",
-        children=[html.H4(id='player_info'), dcc.Graph(
-            id='player-graph',
-        )]
-    ),
+    html.Div(children=[
+        html.Div(children=[
+            html.H3("Week of the game:"),
+            dcc.Dropdown(placeholder="Week of the game ...", options=[i for i in range(1, 9)],
+                         id='week_number_input', value=1, clearable=False),
+
+        ], className='dropdown-box'),
+        html.Div(children=[
+            html.H3("Game id input:"),
+            dcc.Dropdown(placeholder="Game id input ...", multi=False, id='game_id_input',
+                         value=2021090900, clearable=False),
+
+        ], className='dropdown-box'),
+        html.Div(children=[
+            html.H3("Play id input:"),
+            dcc.Dropdown(id='play_id_input', value=349, placeholder="Play id input ...", clearable=False),
+        ], className='dropdown-box'),
+    ], className='dropdowns-box'),
+    html.Br(),
+    html.Div(children=[
+        dcc.Loading(
+            id="loading-1",
+            type="graph",
+            children=dcc.Graph(
+                id='animate-graph',
+            )
+        ),
+    ], className='graph-box'),
+    html.Br(),
+    # html.H4(id='test'),
+    html.Div(children=[
+        html.Div(children=[
+            html.H3("Player season info"),
+            dcc.Loading(
+                id="loading-2",
+                type="graph",
+                children=[
+                    dcc.Dropdown(id='player_id_input', value=25511, options=get_players_option(),
+                                 placeholder="Ball"),
+                    html.Img(className='player_image', src='assets/blank.png',
+                             ),
+                    html.Div(id='player_info'),
+                ]
+            ),
+        ], className='player-info-box'),
+        html.Div(children=[
+            dcc.Loading(
+                id="loading-2",
+                type="graph",
+                children=[
+                    dcc.Graph(id='player-graph',
+                              figure={
+                                  'layout': {
+                                      'plot_bgcolor': '#282828',
+                                      'paper_bgcolor': '#282828',
+                                  }
+                              })
+                ]
+            ),
+        ], className='player-graph-box'),
+    ], className='player-box'),
 
 ])
 
@@ -105,6 +143,7 @@ def get_selected_player(player_point):
             nfl_id = ast.literal_eval(data['hovertext'])['nflId']
         return nfl_id
     return None
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
