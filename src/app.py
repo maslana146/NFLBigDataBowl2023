@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output, html, dcc
 
 from load_data import (
-    weeks_data, pff_scouting_data, players_data, plays_data
+    weeks_data, pff_scouting_data, players_data, plays_data, games_data
 )
 from src.amimate_play import animate_play
 from src.player_heatmap import get_player_season_info
@@ -44,9 +44,8 @@ app.layout = html.Div(children=[
         dcc.Loading(
             id="loading-1",
             type="graph",
-            children=dcc.Graph(
-                id='animate-graph',
-            )
+            children=[dcc.Graph(id='animate-graph'),
+                      html.H5(id='play-info')]
         ),
     ], className='graph-box'),
     html.Br(),
@@ -59,7 +58,7 @@ app.layout = html.Div(children=[
                 type="graph",
                 children=[
                     dcc.Dropdown(id='player_id_input', value=25511, options=get_players_option(),
-                                 placeholder="Ball"),
+                                 placeholder="Ball", className='dropdown-box'),
                     html.Img(className='player_image', src='assets/blank.png',
                              ),
                     html.Div(id='player_info'),
@@ -112,13 +111,16 @@ def update_play_id_options(week_id, game_id):
 
 @app.callback(
     Output('animate-graph', 'figure'),
+    Output('play-info', 'children'),
     Input('week_number_input', 'value'),
     Input('game_id_input', 'value'),
     Input('play_id_input', 'value'))
 def update_figure(week_number, game_id, player_id):
-    fig_anime, fig_speed_line = animate_play(weeks_data[week_number - 1], plays_data, players_data,
-                                             pff_scouting_data, game_id, player_id)
-    return fig_anime
+    fig_anime, fig_speed_line, playDesc = animate_play(weeks_data[week_number - 1], plays_data, players_data,
+                                                       pff_scouting_data, game_id, player_id, games_data)
+    # print(playDesc)
+
+    return fig_anime, playDesc
 
 
 @app.callback(

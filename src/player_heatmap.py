@@ -29,11 +29,15 @@ def get_player_season_info(player_nfl_id):
                              width=1200, height=530
                              )
     fig.update_layout(paper_bgcolor="#282828",
+                      plot_bgcolor="#0D0887",
                       font=dict(
                           family="Courier New, monospace",
                           size=18,
                           color="white"
                       ))
+
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(showgrid=False)
 
 
     info = html.Div(children=[

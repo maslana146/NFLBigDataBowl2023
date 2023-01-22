@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
 import plotly.express as px
+import plotly.graph_objects as go
 
 colors = {0: '#D50A0A',
           1: '#003594',
@@ -9,7 +9,8 @@ colors = {0: '#D50A0A',
           }
 
 
-def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId):
+def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId, games_data):
+    games_temp = games_data[games_data['gameId'] == gameId].values[0]
     selected_play_df = play_df[(play_df.playId == playId) & (play_df.gameId == gameId)].copy()
 
     tracking_players_df = pd.merge(tracking_df, players, how="left", on="nflId")
@@ -133,7 +134,7 @@ def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId)
             )
         )
         # Plot Players
-        for color_id,team in enumerate(selected_tracking_df.team.unique()):
+        for color_id, team in enumerate(selected_tracking_df.team.unique()):
             plot_df = selected_tracking_df[(selected_tracking_df.team == team) & (
                     selected_tracking_df.frameId == frameId)].copy()
             if team != "football":
@@ -141,10 +142,11 @@ def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId)
                 for nflId in plot_df.nflId:
                     selected_player_df = plot_df[plot_df.nflId == nflId]
                     p_info = {
-                        'nflId':selected_player_df["nflId"].values[0],
-                        'displayName':selected_player_df["displayName"].values[0],
-                        'Position':selected_player_df["pff_positionLinedUp"].values[0],
-                        'Role':selected_player_df["pff_role"].values[0],
+                        #
+                        'Name': f"""{selected_player_df["displayName"].values[0]}""",
+                        'nflId': selected_player_df["nflId"].values[0],
+                        # 'Position':selected_player_df["pff_positionLinedUp"].values[0],
+                        # 'Role':selected_player_df["pff_role"].values[0],
                     }
                     hover_text_array.append(p_info)
                 data.append(go.Scatter(x=plot_df["x"], y=plot_df["y"], mode='markers',
@@ -175,8 +177,7 @@ def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId)
         yaxis=dict(range=[0, 53.3], autorange=False, showgrid=False, showticklabels=False),
 
         plot_bgcolor='#00B140',
-        # Create title and add play description at the bottom of the chart for better visual appeal
-        title=f"GameId: {gameId}, PlayId: {playId}<br>{gameClock} {quarter}Q" + "<br>" * 19 + f"{playDescription}",
+        title=f"{games_temp[-2]} vs {games_temp[-1]}<br>{gameClock} {quarter}Q",
         updatemenus=updatemenus_dict,
         sliders=[sliders_dict]
     )
@@ -218,4 +219,4 @@ def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId)
                           size=18,
                           color="white"
                       ))
-    return fig, fig_speed_line
+    return fig, fig_speed_line, playDescription

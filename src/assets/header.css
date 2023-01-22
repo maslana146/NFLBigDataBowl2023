@@ -16,6 +16,7 @@
     background-color: #282828;
     width: 400px;
     padding: 20px;
+    color: black;
 }
 .dropdowns-box {
     display: flex;
