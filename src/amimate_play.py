@@ -10,6 +10,7 @@ colors = {0: '#D50A0A',
 
 
 def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId, games_data):
+
     games_temp = games_data[games_data['gameId'] == gameId].values[0]
     selected_play_df = play_df[(play_df.playId == playId) & (play_df.gameId == gameId)].copy()
 
@@ -143,7 +144,7 @@ def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId,
                     selected_player_df = plot_df[plot_df.nflId == nflId]
                     p_info = {
                         #
-                        'Name': f"""{selected_player_df["displayName"].values[0]}""",
+                        'Name': f"""{selected_player_df["displayName"].values[0]}<br>""",
                         'nflId': selected_player_df["nflId"].values[0],
                         # 'Position':selected_player_df["pff_positionLinedUp"].values[0],
                         # 'Role':selected_player_df["pff_role"].values[0],
@@ -177,7 +178,7 @@ def animate_play(tracking_df, play_df, players, pffScoutingData, gameId, playId,
         yaxis=dict(range=[0, 53.3], autorange=False, showgrid=False, showticklabels=False),
 
         plot_bgcolor='#00B140',
-        title=f"{games_temp[-2]} vs {games_temp[-1]}<br>{gameClock} {quarter}Q",
+        title=f"{games_temp[-2]} vs {games_temp[-1]} {games_temp[-4]} {games_temp[-3]}<br>{gameClock} {quarter}Q",
         updatemenus=updatemenus_dict,
         sliders=[sliders_dict]
     )
